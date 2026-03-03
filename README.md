@@ -19,10 +19,10 @@ Replacing **"Accountability Fatigue"** in Greek Life and large housing groups. W
 
 | Milestone | Deliverable | Target Date | Status |
 | :--- | :--- | :--- | :--- |
-| **Milestone 1** | **Integration:** Frontend/Backend connected locally | Mar 3, 2026 | 🟢 COMPLETED |
-| **Milestone 2** | **Alpha Launch:** Deploy to ATO + 4 test groups | Mar 4, 2026 | 🟡 IN PROGRESS |
-| **Milestone 3** | **Iteration:** Patching friction points from user data | Mar 9, 2026 | ⚪ PENDING |
-| **Milestone 4** | **Launch & Learnings:** Presentation of data | Mar 10, 2026 | ⚪ PENDING |
+| **Milestone 1** | **Integration:** Frontend/Backend connected locally | Mar 3, 2026 |  COMPLETED |
+| **Milestone 2** | **Alpha Launch:** Deploy to ATO + 4 test groups | Mar 4, 2026 |  IN PROGRESS |
+| **Milestone 3** | **Iteration:** Patching friction points from user data | Mar 9, 2026 |  PENDING |
+| **Milestone 4** | **Launch & Learnings:** Presentation of data | Mar 10, 2026 |  PENDING |
 
 ---
 
