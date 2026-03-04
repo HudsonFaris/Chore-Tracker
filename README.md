@@ -54,6 +54,13 @@ The backend leverages a serverless NoSQL structure to minimize latency during hi
 
 ## Backend Baseline Initialization
 
+Another thing to note is that node modules or /.env files are included. This should be done by installing 
+1. npm install firebase
+2. npm install -g firebase-tools
+
+Create the .env file locally with Hudsons Key
+
+
 ### Firebase Configuration (`src/firebase.js`)
 ```javascript
 import { initializeApp } from "firebase/app";
@@ -63,13 +70,15 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
-  authDomain: "chore-tracker-audit.firebaseapp.com",
-  projectId: "chore-tracker-audit",
-  storageBucket: "chore-tracker-audit.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
+  authDomain: "choretracker-8e636.firebaseapp.com",
+  projectId: "choretracker-8e636",
+  storageBucket: "choretracker-8e636.firebasestorage.app",
+  messagingSenderId: "1078067222453",
+  appId: "1:1078067222453:web:b14522dfc862e7c45fabfc",
+  measurementId: "G-R32G3T7ZHR"
 };
 
+//initialize firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
