@@ -1,46 +1,76 @@
 # Chore Tracker | High-Density Visual Audit System
 
-A minimalist, high-efficiency chore management system designed to replace noisy group chats with a silent, visual audit grid.
+A minimalist, high-efficiency chore management system designed to replace high-noise communication with a silent, visual audit grid.
 
-##  Launch Premise
-Replacing **"Accountability Fatigue"** in Greek Life and large housing groups. We move proof-of-work out of cluttered threads and into a high-density grid for 30-second manager audits.
+## Launch Premise
+The objective is to eliminate accountability fatigue in large group living environments. The system replaces cluttered message threads with a high-density grid designed for 30-second manager audits.
+
+## Tech Stack
+* **Frontend:** React / Tailwind CSS
+* **Backend:** Firebase (Cloud Firestore, Authentication, Cloud Storage)
+* **Hosting:** Railway (App Server)
+* **DNS & Security:** Cloudflare (Edge Caching and SSL)
+* **Authentication:** 4-digit PIN-based system tied to Manager CSV ingests
 
 ---
 
-##  Tech Stack
-* **Frontend:** React / Tailwind CSS (High-Contrast B&W UI)
-* **Backend:** Firebase (Cloud Firestore & Authentication)
-* **Database:** NoSQL (Document-based schema for flexible user/house mapping)
-* **Auth:** 4-digit PIN-based login system tied to Manager CSV ingests.
+## Firebase Backend Architecture
+
+The backend leverages a serverless NoSQL structure to minimize latency during high-density photo uploads:
+
+* **Cloud Firestore:** Uses a flat document-collection model. All assignments are indexed by `org_id` to allow managers to fetch an entire house's status in a single query.
+* **Firebase Storage:** Handles binary image data for "proof of work." The database stores only the signed URL strings to maintain high query performance in the dashboard.
+* **Authentication:** Implements a custom PIN-to-UID mapping. By utilizing Firebase Anonymous Auth combined with custom claims, users maintain a persistent session on their mobile devices without requiring traditional email/password credentials.
 
 ---
 
-##  Launch Roadmap & Milestones
+## Launch Roadmap and Milestones
 
 | Milestone | Deliverable | Target Date | Status |
 | :--- | :--- | :--- | :--- |
-| **Milestone 1** | **Integration:** Frontend/Backend connected locally | Mar 3, 2026 |  COMPLETED |
-| **Milestone 2** | **Alpha Launch:** Deploy to ATO + 4 test groups | Mar 4, 2026 |  IN PROGRESS |
-| **Milestone 3** | **Iteration:** Patching friction points from user data | Mar 9, 2026 |  PENDING |
-| **Milestone 4** | **Launch & Learnings:** Presentation of data | Mar 10, 2026 |  PENDING |
+| **Milestone 1** | **Integration:** Frontend/Backend connected locally | Mar 3, 2026 | COMPLETED |
+| **Milestone 2** | **Launch Plan:** Presentation of Alpha deployment strategy | Mar 4, 2026 | COMPLETED |
+| **Milestone 3** | **Alpha Deployment:** Live testing with 5 organizations | Mar 5, 2026 | IN PROGRESS |
+| **Milestone 4** | **Iteration:** Patching friction points from user data | Mar 9, 2026 | PENDING |
 
 ---
 
-##  Team & Responsibilities (RPs)
+## Team and Responsibilities
 * **Hudson:** Backend Infrastructure, Database Architecture, Escalation Lead.
 * **Eoghan:** Frontend Development, Mobile UI/UX, Repository Management.
 * **Alex:** User Logistics, Alpha Test Outreach, Launch Presentation.
 
----
-
-## Sync & Escalation Plan
+## Sync and Escalation Plan
 * **Asynchronous:** Daily updates in group chat upon feature branch merges.
-* **Synchronous:** 15-minute standups (Mon/Wed) and 1-hour "Sunday Synthesis" meetings.
-* **The 24-Hour Rule:** If an RP is stuck for 24 hours, it must be escalated to the team. If unblocked after 12 more hours, it is escalated to the project advisor.
+* **Synchronous:** 15-minute standups (Mon/Wed) and 1-hour Sunday Synthesis meetings.
+* **The 24-Hour Rule:** If a team member is stuck for 24 hours, it must be escalated to the group. If unblocked after 12 more hours, it is escalated to the project advisor.
+
+## Success Metrics
+1. **Infrastructure:** 100% team parity in repository contribution.
+2. **User Adoption:** 5 distinct organizations (ATO, Dorm, 3 Roommate groups) onboarded.
+3. **Engagement:** Minimum 20 successful visual logs during the first 48 hours of launch.
 
 ---
 
-## 📈 Success Metrics
-1.  **Infrastructure:** 100% team push/pull parity.
-2.  **User Adoption:** 5 distinct organizations (Alpha test groups) locked for Week 3.
-3.  **Engagement:** Minimum 20 successful "Silent Submissions" logged during the first 48 hours of launch.
+## Backend Baseline Initialization
+
+### Firebase Configuration (`src/firebase.js`)
+```javascript
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_KEY,
+  authDomain: "chore-tracker-audit.firebaseapp.com",
+  projectId: "chore-tracker-audit",
+  storageBucket: "chore-tracker-audit.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+};
+
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+export const storage = getStorage(app);
