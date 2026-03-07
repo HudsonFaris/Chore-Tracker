@@ -52,7 +52,11 @@ The backend leverages a serverless NoSQL structure to minimize latency during hi
 
 ---
 
+## Domain
+Chore-Tracker.net
+
 ## Backend Baseline Initialization
+
 
 ### Firebase Configuration (`src/firebase.js`)
 ```javascript
