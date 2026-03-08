@@ -14,6 +14,12 @@ The objective is to eliminate accountability fatigue in large group living envir
 
 ---
 
+## Tech Stack
+* **Frontend Library:** React 18
+* **Build Tool:** Vite 6 (ESM-based HMR)
+* **Styling:** Tailwind CSS 4 (Vite plugin)
+* **Backend:** Firebase (Firestore, Auth, Storage)
+
 ## Firebase Backend Architecture
 
 The backend leverages a serverless NoSQL structure to minimize latency during high-density photo uploads:
@@ -63,6 +69,9 @@ Another thing to note is that node modules or /.env files are included. This sho
 
 Create the .env file locally with Hudsons Key
 
+
+## How to run
+npm run dev (in terminal, root of folder)
 
 ### Firebase Configuration (`src/firebase.js`)
 ```javascript
