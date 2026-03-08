@@ -6,6 +6,7 @@ import { ChoreListPage } from "./components/ChoreListPage";
 import { ChoreDetailPage } from "./components/ChoreDetailPage";
 import { ProfilePage } from "./components/ProfilePage";
 import { CreateChorePage } from "./components/CreateChorePage";
+import { ResidentManager } from "./components/ResidentManager"; //for testing purposes, can be removed later
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: "chores/create", Component: CreateChorePage },
       { path: "chore/:id", Component: ChoreDetailPage },
       { path: "profile", Component: ProfilePage },
+      { path: "manage-residents", Component: ResidentManager }, 
     ],
   },
 ]);

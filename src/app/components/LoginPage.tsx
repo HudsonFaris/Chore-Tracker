@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate, Link } from "react-router";
 import { auth, db } from "../../firebase"; 
+
 import { 
   collection, 
   query, 
@@ -34,7 +35,6 @@ export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  //org resident sign-in and pin 
   const handleResidentLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -59,7 +59,6 @@ export function LoginPage() {
       const userSnap = await getDocs(userQ);
 
       if (!userSnap.empty) {
-        //Passing full object instead of string
         login({
           uid: userSnap.docs[0].id,
           email: null,
@@ -78,7 +77,6 @@ export function LoginPage() {
     }
   };
 
-  //manager sign-in
   const handleManagerLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -112,7 +110,6 @@ export function LoginPage() {
         return;
       }
 
-      //Passing full object instead of string (redundant here)
       login({
         uid: userCred.user.uid,
         email: userData.email,
@@ -128,7 +125,6 @@ export function LoginPage() {
     }
   };
 
-  //manager sign-up
   const handleManagerSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -143,9 +139,8 @@ export function LoginPage() {
         manager_uid: userCred.user.uid
       });
 
-      //removed pin for manager accounts since they will log in with email/password
       await setDoc(doc(db, "users", userCred.user.uid), {
-        email: formData.email, //This will show up in trash as of right now, will fix later
+        email: formData.email,
         role: "manager",
         org_id: orgRef.id
       });
@@ -159,7 +154,7 @@ export function LoginPage() {
     }
   };
 
-  return ( //Reformatted login to make it a bit bigger and just more straight forward
+  return (
     <div className="flex flex-col min-h-screen bg-white items-center justify-center px-6">
       {view !== "welcome" && (
         <button 

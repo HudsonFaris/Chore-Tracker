@@ -15,6 +15,9 @@ export function ProfilePage() {
     navigate("/");
   };
 
+  const displayName = user.email || "Resident";
+  const initial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="flex flex-col flex-1 bg-white">
       {/* Top Bar */}
@@ -30,12 +33,12 @@ export function ProfilePage() {
       <div className="flex-1 flex flex-col items-center px-6 pt-12">
         <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center mb-4">
           <span className="text-black text-xl">
-            {user.name.charAt(0)}
+            {initial}
           </span>
         </div>
-        <h2 className="text-black mb-1">{user.name}</h2>
+        <h2 className="text-black mb-1">{displayName}</h2>
         <p className="text-gray-400 text-xs mb-1 capitalize">{user.role}</p>
-        <p className="text-gray-500 text-sm mb-8">{user.organization}</p>
+        <p className="text-gray-500 text-sm mb-8">{user.organizationName}</p>
 
         <div className="w-full max-w-[260px] space-y-3">
           <div className="border border-gray-200 p-3 flex justify-between">
@@ -44,7 +47,7 @@ export function ProfilePage() {
           </div>
           <div className="border border-gray-200 p-3 flex justify-between">
             <span className="text-xs text-gray-400">Organization</span>
-            <span className="text-xs text-black">{user.organization}</span>
+            <span className="text-xs text-black">{user.organizationName}</span>
           </div>
         </div>
 
