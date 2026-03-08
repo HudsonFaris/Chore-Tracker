@@ -7,7 +7,7 @@ import { getStorage } from "firebase/storage";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 //config, railway .env variables will be used for deployment.
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_KEY,
+  apiKey: import.meta.env.VITE_FIREBASE_KEY,
   authDomain: "choretracker-8e636.firebaseapp.com",
   projectId: "choretracker-8e636",
   storageBucket: "choretracker-8e636.firebasestorage.app",
