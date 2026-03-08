@@ -131,6 +131,15 @@ export function LoginPage() {
     setError("");
 
     try {
+      const orgCheckQ = query(collection(db, "organizations"), where("org_id", "==", formData.orgName));
+      const orgCheckSnap = await getDocs(orgCheckQ);
+
+      if (!orgCheckSnap.empty) { //Check for duplicate organization names
+        setError("This organization name is already taken. Please choose another.");
+        setLoading(false);
+        return;
+      }
+
       const userCred = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       await sendEmailVerification(userCred.user);
 
