@@ -30,10 +30,12 @@ export function HomePage() {
         {/* Content */}
         <div className="relative flex-1 flex flex-col items-center justify-center px-6">
           <div className="bg-white border border-gray-200 px-8 py-10 flex flex-col items-center max-w-[300px] w-full">
-            <h2 className="text-black mb-1">{user.organization}</h2>
+            {/* CHANGED: organizationName instead of organization */}
+            <h2 className="text-black mb-1">{user.organizationName}</h2>
             <p className="text-gray-500 text-sm mb-1">Chore Information</p>
             <p className="text-gray-400 text-xs mb-6">
-              Signed in as {user.name} ({user.role})
+              {/* CHANGED: user.email instead of user.name */}
+              Signed in as {user.email || 'Resident'} ({user.role})
             </p>
             <button
               onClick={() => navigate("/chores")}

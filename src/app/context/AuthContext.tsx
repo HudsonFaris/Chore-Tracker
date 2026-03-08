@@ -1,17 +1,20 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
+//logged out states and roles
 type Role = "manager" | "resident" | null;
 
 interface User {
-  name: string;
+  uid: string;
+  email: string | null;
   role: Role;
-  organization: string;
-  orgImage: string;
+  org_id: string; //Firestore Document ID (e.g., AnlqqjMcuJT6...)
+  organizationName: string; //isplay name (e.g., ATO-Beta-Delta)
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (role: Role) => void;
+  //Updated login to accept the user object instead of just a string
+  login: (userData: User) => void;
   logout: () => void;
 }
 
@@ -24,14 +27,9 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (role: Role) => {
-    setUser({
-      name: role === "manager" ? "Jeff" : "Alex",
-      role,
-      organization: "Alpha Tau Omega",
-      orgImage:
-        "https://images.unsplash.com/photo-1762344692868-1d302fc3c4fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmF0ZXJuaXR5JTIwaG91c2UlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTM2MjUzOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    });
+
+  const login = (userData: User) => {
+    setUser(userData);
   };
 
   const logout = () => {

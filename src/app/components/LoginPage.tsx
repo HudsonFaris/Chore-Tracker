@@ -59,7 +59,14 @@ export function LoginPage() {
       const userSnap = await getDocs(userQ);
 
       if (!userSnap.empty) {
-        login("resident"); 
+        //Passing full object instead of string
+        login({
+          uid: userSnap.docs[0].id,
+          email: null,
+          role: "resident",
+          org_id: orgId,
+          organizationName: formData.orgName
+        }); 
         navigate("/home");
       } else {
         setError("Invalid PIN for this organization.");
@@ -101,10 +108,18 @@ export function LoginPage() {
 
       if (userData.org_id !== actualOrgId || userData.role !== "manager") {
         setError("You are not authorized to manage this organization.");
+        setLoading(false);
         return;
       }
 
-      login("manager");
+      //Passing full object instead of string (redundant here)
+      login({
+        uid: userCred.user.uid,
+        email: userData.email,
+        role: "manager",
+        org_id: actualOrgId,
+        organizationName: formData.orgName
+      });
       navigate("/home");
     } catch (err: any) {
       setError("Invalid email or password.");
