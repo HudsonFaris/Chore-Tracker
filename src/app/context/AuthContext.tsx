@@ -6,6 +6,7 @@ type Role = "manager" | "resident" | null;
 interface User {
   uid: string;
   email: string | null;
+  name: string; //Added name field to User interface
   role: Role;
   org_id: string; //Firestore Document ID (e.g., AnlqqjMcuJT6...)
   organizationName: string; //isplay name (e.g., ATO-Beta-Delta)

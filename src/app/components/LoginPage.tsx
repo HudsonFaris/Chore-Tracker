@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate, Link } from "react-router";
+import { useNavigate } from "react-router";
 import { auth, db } from "../../firebase"; 
 
 import { 
@@ -9,7 +9,8 @@ import {
   getDocs, 
   addDoc, 
   doc, 
-  setDoc 
+  setDoc,
+  getDoc //Added missing import, getDocs and getDoc will serve 2 different purposes, might change later. 
 } from "firebase/firestore";
 import { 
   createUserWithEmailAndPassword, 
@@ -27,7 +28,8 @@ export function LoginPage() {
     email: "", 
     password: "", 
     orgName: "", 
-    pin: "" 
+    pin: "",
+    name: "" // dded name to state for signups
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,8 +61,10 @@ export function LoginPage() {
       const userSnap = await getDocs(userQ);
 
       if (!userSnap.empty) {
+        const userData = userSnap.docs[0].data();
         login({
           uid: userSnap.docs[0].id,
+          name: userData.name || "Resident",
           email: null,
           role: "resident",
           org_id: orgId,
@@ -101,8 +105,16 @@ export function LoginPage() {
       }
       const actualOrgId = orgSnap.docs[0].id;
 
-      const userSnap = await getDocs(query(collection(db, "users"), where("email", "==", formData.email)));
-      const userData = userSnap.docs[0].data();
+      // Fetch user data from the 'users' collection
+      const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
+      
+      if (!userDoc.exists()) {
+        setError("User profile not found.");
+        setLoading(false);
+        return;
+      }
+
+      const userData = userDoc.data();
 
       if (userData.org_id !== actualOrgId || userData.role !== "manager") {
         setError("You are not authorized to manage this organization.");
@@ -113,6 +125,7 @@ export function LoginPage() {
       login({
         uid: userCred.user.uid,
         email: userData.email,
+        name: userData.name || "Manager", 
         role: "manager",
         org_id: actualOrgId,
         organizationName: formData.orgName
@@ -134,8 +147,8 @@ export function LoginPage() {
       const orgCheckQ = query(collection(db, "organizations"), where("org_id", "==", formData.orgName));
       const orgCheckSnap = await getDocs(orgCheckQ);
 
-      if (!orgCheckSnap.empty) { //Check for duplicate organization names
-        setError("This organization name is already taken. Please choose another.");
+      if (!orgCheckSnap.empty) {
+        setError("This organization name is already taken.");
         setLoading(false);
         return;
       }
@@ -148,7 +161,9 @@ export function LoginPage() {
         manager_uid: userCred.user.uid
       });
 
+      //Save name along with other data
       await setDoc(doc(db, "users", userCred.user.uid), {
+        name: formData.name, //formm here
         email: formData.email,
         role: "manager",
         org_id: orgRef.id
@@ -262,6 +277,7 @@ export function LoginPage() {
         {view === "manager_signup" && (
           <form onSubmit={handleManagerSignup} className="space-y-4">
             <h2 className="text-xl font-bold">Register Organization</h2>
+            <input required placeholder="Your Full Name" className="w-full p-3 border-2 border-gray-100 rounded-md focus:border-black outline-none" onChange={(e) => setFormData({...formData, name: e.target.value})} />
             <input required type="email" placeholder="Admin Email" className="w-full p-3 border-2 border-gray-100 rounded-md focus:border-black outline-none" onChange={(e) => setFormData({...formData, email: e.target.value})} />
             <input required type="password" placeholder="Password" className="w-full p-3 border-2 border-gray-100 rounded-md focus:border-black outline-none" onChange={(e) => setFormData({...formData, password: e.target.value})} />
             <input required placeholder="Organization Name" className="w-full p-3 border-2 border-gray-100 rounded-md focus:border-black outline-none" onChange={(e) => setFormData({...formData, orgName: e.target.value})} />
