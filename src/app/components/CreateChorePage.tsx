@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../../firebase";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
-import { ChevronLeft, Check } from "lucide-react";
+import { ChevronLeft, Check, Camera } from "lucide-react";
 
 export function CreateChorePage() {
   const { user } = useAuth();
@@ -94,6 +94,14 @@ export function CreateChorePage() {
               <input required type="date" className="p-2 border text-xs" onChange={e => setDueDate(e.target.value)} />
               <input required type="time" className="p-2 border text-xs" onChange={e => setDueTime(e.target.value)} />
             </div>
+
+            <button
+              type="button"
+              onClick={() => setUploadProof(!uploadProof)}
+              className={`w-full py-3 border text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 ${uploadProof ? "bg-gray-100 border-black text-black" : "border-gray-200 text-gray-400"}`}
+            >
+              <Camera size={14} /> {uploadProof ? "Photo Proof Required" : "No Photo Required"}
+            </button>
 
             <button type="submit" className="w-full py-4 bg-black text-white text-xs uppercase tracking-widest font-bold">
               Confirm Assignment
