@@ -1,47 +1,89 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-
-//logged out states and roles
-type Role = "manager" | "resident" | null;
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { auth, db } from "../../firebase"; 
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 interface User {
   uid: string;
   email: string | null;
-  name: string; //Added name field to User interface
-  role: Role;
-  org_id: string; //Firestore Document ID (e.g., AnlqqjMcuJT6...)
-  organizationName: string; //isplay name (e.g., ATO-Beta-Delta)
+  name: string;
+  role: "manager" | "resident" | null;
+  org_id: string;
+  organizationName: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  //Updated login to accept the user object instead of just a string
+  loading: boolean;
   login: (userData: User) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  login: () => {},
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      try {
+        if (firebaseUser) {
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: data.name,
+              role: data.role,
+              org_id: data.org_id,
+              organizationName: data.organizationName,
+            });
+          } else {
+            setUser(null);
+          }
+        } else {
+          const stored = localStorage.getItem("residentSession");
+          if (stored) {
+            setUser(JSON.parse(stored));
+          } else {
+            setUser(null);
+          }
+        }
+      } catch (error) {
+        console.error("Auth sync error:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const login = (userData: User) => {
     setUser(userData);
+    if (userData.role === "resident") {
+      localStorage.setItem("residentSession", JSON.stringify(userData));
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    localStorage.removeItem("residentSession");
+    await signOut(auth);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};

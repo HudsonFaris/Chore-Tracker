@@ -91,45 +91,24 @@ export function LoginPage() {
       
       if (!userCred.user.emailVerified) {
         setError("Please verify your email address before logging in.");
-        setLoading(false);
         return;
       }
 
       const orgQ = query(collection(db, "organizations"), where("org_id", "==", formData.orgName));
       const orgSnap = await getDocs(orgQ);
+      if (orgSnap.empty) { setError("That organization does not exist."); return; }
 
-      if (orgSnap.empty) {
-        setError("That organization does not exist.");
-        setLoading(false);
-        return;
-      }
       const actualOrgId = orgSnap.docs[0].id;
-
-      // Fetch user data from the 'users' collection
       const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
-      
-      if (!userDoc.exists()) {
-        setError("User profile not found.");
-        setLoading(false);
-        return;
-      }
+      if (!userDoc.exists()) { setError("User profile not found."); return; }
 
       const userData = userDoc.data();
-
       if (userData.org_id !== actualOrgId || userData.role !== "manager") {
         setError("You are not authorized to manage this organization.");
-        setLoading(false);
         return;
       }
 
-      login({
-        uid: userCred.user.uid,
-        email: userData.email,
-        name: userData.name || "Manager", 
-        role: "manager",
-        org_id: actualOrgId,
-        organizationName: formData.orgName
-      });
+      //no login here... onAuthStateChanged will fire and set the user automatically
       navigate("/home");
     } catch (err: any) {
       setError("Invalid email or password.");
