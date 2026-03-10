@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { db, storage } from "../../firebase";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { ChevronLeft, Clock, Camera } from "lucide-react";
+
+
 
 export function ChoreDetailPage() {
   const { id } = useParams();
@@ -40,6 +42,27 @@ export function ChoreDetailPage() {
       alert("Upload failed.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const deleteChore = async () => {
+    if (!id || !window.confirm("Are you sure you want to delete this chore and its proof?")) return;
+
+    try {
+      //delete from storage here
+      if (chore.imageUrl) {
+        const storageRef = ref(storage, chore.imageUrl);
+        await deleteObject(storageRef);
+      }
+
+      //doc in firestore
+      await deleteDoc(doc(db, "chores", id));
+
+      //reroute back to list
+      navigate("/chores");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Could not delete chore.");
     }
   };
 
@@ -127,6 +150,17 @@ export function ChoreDetailPage() {
               <button onClick={() => updateDoc(doc(db, "chores", chore.id), { extensionRequested: false })} className="flex-1 py-2 bg-black text-white text-xs">Approve</button>
               <button onClick={() => updateDoc(doc(db, "chores", chore.id), { extensionRequested: false })} className="flex-1 py-2 border border-black text-xs">Deny</button>
             </div>
+          </div>
+        )}
+        
+        {user?.role === "manager" && (
+          <div className="pt-8 mt-8 border-t border-gray-100">
+            <button 
+              onClick={deleteChore}
+              className="w-full py-4 border border-red-200 text-red-500 text-[10px] uppercase tracking-widest font-bold hover:bg-red-50 transition-colors"
+            >
+              Delete Chore Permanently
+            </button>
           </div>
         )}
       </div>
