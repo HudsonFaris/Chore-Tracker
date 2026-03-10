@@ -6,3 +6,6 @@ dist/
 .firebase/
 firebase-debug.log*
 
+.github/workflows/
+
+
