@@ -12,6 +12,7 @@ export function ChoreDetailPage() {
   const navigate = useNavigate();
   const [chore, setChore] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+  
 
   useEffect(() => {
     if (!id) return;
