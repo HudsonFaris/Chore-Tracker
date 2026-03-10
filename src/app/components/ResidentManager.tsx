@@ -4,6 +4,7 @@ import { db } from "../../firebase";
 import { collection, addDoc, query, where, onSnapshot } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { ChevronLeft, UserPlus, Users } from "lucide-react";
+import { doc, deleteDoc } from "firebase/firestore"; //exclusively for deleting residents
 
 interface Resident {
   id: string;
@@ -38,6 +39,20 @@ export function ResidentManager() {
 
     return () => unsubscribe();
   }, [user?.org_id]);
+
+  const handleDeleteResident = async (residentId: string, name: string) => {
+  const confirmDelete = window.confirm(`Are you sure you want to delete ${name}?`);
+  
+  if (confirmDelete) {
+    try {
+      const residentRef = doc(db, "residents", residentId);
+      await deleteDoc(residentRef);
+    } catch (error) {
+      console.error("Error deleting resident:", error);
+      alert("Failed to delete resident. Check your permissions.");
+    }
+  }
+};
 
   const handleAddResident = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +133,12 @@ export function ResidentManager() {
                     <p className="text-sm font-medium text-black">{r.name}</p>
                     <p className="text-xs text-gray-400">PIN: {r.pin}</p>
                   </div>
+                  <button 
+                    onClick={() => handleDeleteResident(r.id, r.name)}
+                    className="text-xs font-semibold py-1 px-3 rounded bg-red-500 text-white hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))
             )}
