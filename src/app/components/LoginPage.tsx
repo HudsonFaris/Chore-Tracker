@@ -74,8 +74,9 @@ export function LoginPage() {
       } else {
         setError("Invalid PIN for this organization.");
       }
-    } catch (err) {
-      setError("Login failed. Please check your connection.");
+    } catch (err: any) {
+      console.error("Resident login error:", err);
+      setError(err.message || "Login failed. Please check your connection.");
     } finally {
       setLoading(false);
     }
