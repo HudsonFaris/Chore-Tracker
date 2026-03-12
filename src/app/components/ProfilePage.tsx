@@ -39,6 +39,7 @@ export function ProfilePage() {
         <h2 className="text-black mb-1">{displayName}</h2>
         <p className="text-gray-400 text-xs mb-1 capitalize">{user.role}</p>
         <p className="text-gray-500 text-sm mb-8">{user.organizationName}</p>
+        <p className="text-gray-500 text-sm mb-8">{user.name}</p>
 
         <div className="w-full max-w-[260px] space-y-3">
           <div className="border border-gray-200 p-3 flex justify-between">
