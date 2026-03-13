@@ -18,6 +18,8 @@ export function CreateChorePage() {
   const [uploadProof, setUploadProof] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  //option for weekly/biweekly chores in the future, currently just one time chores
+
   useEffect(() => {
     const fetchResidents = async () => {
       if (!user?.org_id) return;

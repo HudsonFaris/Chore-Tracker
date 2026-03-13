@@ -74,6 +74,7 @@ export function ChoreDetailPage() {
   const requestExtension = async () => {
     if (!id) return;
     await updateDoc(doc(db, "chores", id), { extensionRequested: true });
+    //Need to add time for actual request here, currently just a flag that shows manager an extension is needed. Could add a date field and have manager approve/deny with new date? For now just a simple request button that flags the chore as needing an extension is implemented.
   };
 
   if (!chore) return null;
