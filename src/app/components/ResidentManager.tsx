@@ -114,7 +114,7 @@ export function ResidentManager() {
               required 
               type="email"
               placeholder="Resident Email" 
-              className="w-full p-3 border-b outline-none focus:border-black" 
+              className="w-full p-3 border border-gray-200 rounded-md bg-white text-black"
               onChange={e => setEmail(e.target.value)} 
             />
             <input 

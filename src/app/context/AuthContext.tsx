@@ -34,11 +34,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const data = userDoc.data();
             setUser({
               uid: firebaseUser.uid,
-              email: firebaseUser.email,
+              email: data.email || firebaseUser.email,
               name: data.name,
               role: data.role,
               org_id: data.org_id,
-              organizationName: data.organizationName,
+              organizationName: data.organizationName || "",
             });
           } else {
             setUser(null);
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
@@ -87,3 +87,4 @@ export const useAuth = () => {
   if (context === undefined) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
+
