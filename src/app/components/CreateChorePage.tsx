@@ -5,6 +5,8 @@ import { db } from "../../firebase";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { ChevronLeft, Check, Camera } from "lucide-react";
 
+
+
 export function CreateChorePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -17,9 +19,8 @@ export function CreateChorePage() {
   const [dueTime, setDueTime] = useState("");
   const [uploadProof, setUploadProof] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [frequency, setFrequency] = useState<"once" | "weekly" | "bi-weekly">("once");
 
-  //option for weekly/biweekly chores in the future, currently just one time chores
-  //tec
 
   useEffect(() => {
     const fetchResidents = async () => {
@@ -45,6 +46,7 @@ export function CreateChorePage() {
       status: "In Progress",
       dueDate,
       dueTime,
+      frequency,
       uploadProof,
       extensionRequested: false,
       createdAt: new Date()
@@ -75,6 +77,23 @@ export function CreateChorePage() {
             <div className="space-y-4">
               <input required placeholder="Task Title" className="w-full p-3 border-b outline-none focus:border-black" onChange={e => setTask(e.target.value)} />
               <textarea placeholder="Description / Steps" className="w-full p-3 border-b outline-none focus:border-black resize-none" rows={2} onChange={e => setDescription(e.target.value)} />
+            </div>
+              <div>
+              <label className="text-xs text-gray-400 block mb-3 uppercase tracking-widest">Repeat Frequency</label>
+              <div className="grid grid-cols-3 gap-2">
+                {["once", "weekly", "bi-weekly"].map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setFrequency(f as any)}
+                    className={`py-2 text-[10px] uppercase border ${
+                      frequency === f ? "bg-black text-white border-black" : "border-gray-200 text-gray-400"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -113,5 +132,6 @@ export function CreateChorePage() {
         )}
       </form>
     </div>
+    
   );
 }

@@ -8,6 +8,8 @@ import { ChevronLeft, Clock, Camera } from "lucide-react";
 
 
 
+
+
 export function ChoreDetailPage() {
   const { id } = useParams();
   const { user } = useAuth();
