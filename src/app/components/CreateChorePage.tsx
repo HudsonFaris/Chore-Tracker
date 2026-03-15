@@ -19,6 +19,7 @@ export function CreateChorePage() {
   const [submitted, setSubmitted] = useState(false);
 
   //option for weekly/biweekly chores in the future, currently just one time chores
+  //tec
 
   useEffect(() => {
     const fetchResidents = async () => {
