@@ -7,7 +7,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { ChevronLeft, Clock, Camera } from "lucide-react";
 
 
-
+//Change profile page, add notification system
 
 
 export function ChoreDetailPage() {
