@@ -17,6 +17,7 @@ export function ResidentManager() {
   const [message, setMessage] = useState("");
   const [residents, setResidents] = useState<Resident[]>([]);
   const { user, loading } = useAuth();
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,11 +68,13 @@ export function ResidentManager() {
         name: residentName,
         pin: pin,
         role: "resident",
+        email: email,
         org_id: user.org_id,
         createdAt: new Date()
       });
       setResidentName("");
       setPin("");
+      setEmail("");
       setMessage("Added successfully!");
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
@@ -106,6 +109,13 @@ export function ResidentManager() {
               value={residentName}
               className="w-full p-3 border border-gray-200 rounded-md bg-white text-black"
               onChange={(e) => setResidentName(e.target.value)} 
+            />
+            <input 
+              required 
+              type="email"
+              placeholder="Resident Email" 
+              className="w-full p-3 border-b outline-none focus:border-black" 
+              onChange={e => setEmail(e.target.value)} 
             />
             <input 
               required
