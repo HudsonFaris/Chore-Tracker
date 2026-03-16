@@ -38,12 +38,16 @@ export function CreateChorePage() {
     e.preventDefault();
     if (!task || selectedPeople.length === 0) return;
 
+    const firstPersonName = selectedPeople[0];
+    const selectedResident = residents.find(r => r.name === firstPersonName);
+
     await addDoc(collection(db, "chores"), {
       title: task,
       description,
       assignedTo: selectedPeople,
       org_id: user.org_id,
       status: "In Progress",
+      residentEmail: selectedResident?.email || "",
       dueDate,
       dueTime,
       frequency,

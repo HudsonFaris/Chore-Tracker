@@ -4,11 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { db, storage } from "../../firebase";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import { ChevronLeft, Clock, Camera } from "lucide-react";
-
-
-//Change profile page, add notification system
-
+import { ChevronLeft, Clock, Camera, Mail } from "lucide-react"; // Added Mail icon
 
 export function ChoreDetailPage() {
   const { id } = useParams();
@@ -16,7 +12,6 @@ export function ChoreDetailPage() {
   const navigate = useNavigate();
   const [chore, setChore] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
-  
 
   useEffect(() => {
     if (!id) return;
@@ -51,16 +46,11 @@ export function ChoreDetailPage() {
     if (!id || !window.confirm("Are you sure you want to delete this chore and its proof?")) return;
 
     try {
-      //delete from storage here
       if (chore.imageUrl) {
         const storageRef = ref(storage, chore.imageUrl);
         await deleteObject(storageRef);
       }
-
-      //doc in firestore
       await deleteDoc(doc(db, "chores", id));
-
-      //reroute back to list
       navigate("/chores");
     } catch (err) {
       console.error("Delete failed:", err);
@@ -76,7 +66,26 @@ export function ChoreDetailPage() {
   const requestExtension = async () => {
     if (!id) return;
     await updateDoc(doc(db, "chores", id), { extensionRequested: true });
-    //Need to add time for actual request here, currently just a flag that shows manager an extension is needed. Could add a date field and have manager approve/deny with new date? For now just a simple request button that flags the chore as needing an extension is implemented.
+  };
+
+  // NEW: Extension Approval logic (+24 hours)
+  const approveExtension = async () => {
+    if (!id || !chore.dueDate) return;
+    const date = new Date(chore.dueDate + "T00:00:00");
+    date.setDate(date.getDate() + 1);
+    const newDate = date.toISOString().split('T')[0];
+    
+    await updateDoc(doc(db, "chores", id), { 
+      dueDate: newDate,
+      extensionRequested: false 
+    });
+  };
+
+  // NEW: Email Reminder logic
+  const sendEmailReminder = () => {
+    const subject = encodeURIComponent(`Chore Reminder: ${chore.title}`);
+    const body = encodeURIComponent(`Hi, this is a reminder to complete your task: ${chore.title}. It is currently due on ${chore.dueDate}.`);
+    window.location.href = `mailto:${chore.residentEmail || ""}?subject=${subject}&body=${body}`;
   };
 
   if (!chore) return null;
@@ -128,12 +137,23 @@ export function ChoreDetailPage() {
               </button>
             )}
             
-            {!chore.extensionRequested && (
-              <button onClick={requestExtension} className="w-full py-4 border border-black text-xs font-bold uppercase flex items-center justify-center gap-2">
-                <Clock size={14}/> Request Extension
-              </button>
-            )}
+            <button 
+              onClick={requestExtension} 
+              disabled={chore.extensionRequested}
+              className={`w-full py-4 border text-xs font-bold uppercase flex items-center justify-center gap-2 ${chore.extensionRequested ? "border-gray-200 text-gray-400 cursor-default" : "border-black text-black"}`}
+            >
+              <Clock size={14}/> {chore.extensionRequested ? "Extension Requested" : "Request Extension"}
+            </button>
           </div>
+        )}
+
+        {user?.role === "manager" && chore.status === "In Progress" && (
+          <button 
+            onClick={sendEmailReminder}
+            className="w-full py-4 border border-black text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+          >
+            <Mail size={14} /> Send Email Reminder
+          </button>
         )}
 
         {user?.role === "manager" && chore.status === "Pending Verification" && (
@@ -150,8 +170,8 @@ export function ChoreDetailPage() {
           <div className="p-4 bg-gray-50 border space-y-3">
             <p className="text-xs text-center font-bold">Extension Requested</p>
             <div className="flex gap-2">
-              <button onClick={() => updateDoc(doc(db, "chores", chore.id), { extensionRequested: false })} className="flex-1 py-2 bg-black text-white text-xs">Approve</button>
-              <button onClick={() => updateDoc(doc(db, "chores", chore.id), { extensionRequested: false })} className="flex-1 py-2 border border-black text-xs">Deny</button>
+              <button onClick={approveExtension} className="flex-1 py-2 bg-black text-white text-xs uppercase font-bold">Approve (+24h)</button>
+              <button onClick={() => updateDoc(doc(db, "chores", id!), { extensionRequested: false })} className="flex-1 py-2 border border-black text-xs uppercase font-bold">Deny</button>
             </div>
           </div>
         )}
