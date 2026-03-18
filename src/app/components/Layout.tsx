@@ -2,9 +2,8 @@ import { Outlet } from "react-router";
 
 export function Layout() {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gray-100">
-      {/* iPhone frame */}
-      <div className="w-[390px] h-[844px] bg-white overflow-hidden border border-gray-300 shadow-lg flex flex-col">
+    <div className="w-full min-h-screen flex items-start justify-center bg-gray-50 sm:items-center sm:py-8">
+      <div className="w-full min-h-screen sm:min-h-0 sm:w-[560px] sm:max-h-[90vh] sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-xl bg-white flex flex-col overflow-hidden">
         <Outlet />
       </div>
     </div>

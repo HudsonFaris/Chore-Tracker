@@ -11,36 +11,38 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col flex-1 bg-white">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-        <span className="text-black tracking-wide">Chore Tracker</span>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <span className="text-black font-bold tracking-widest text-sm uppercase">Chore Tracker</span>
         <button
           onClick={() => navigate("/profile")}
-          className="px-3 py-1.5 border border-black text-black bg-white text-xs"
+          className="px-3 py-1.5 border border-black text-black bg-white text-xs uppercase font-bold"
         >
           Profile
         </button>
       </div>
 
-      <div className="relative flex-1 flex flex-col items-center justify-center px-6">
-        <div className="bg-white border border-gray-200 px-8 py-10 flex flex-col items-center max-w-[300px] w-full">
-          <h2 className="text-black mb-1">{user.organizationName}</h2>
-          <p className="text-gray-500 text-sm mb-1">Chore Information</p>
-          <p className="text-gray-400 text-xs mb-6">
-            Signed in as {user.email || 'Resident'} ({user.role})
-          </p>
-          
-          <div className="w-full space-y-3">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
+        <div className="w-full max-w-lg space-y-6">
+          <div className="border border-gray-100 p-8">
+            <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Organization</p>
+            <h2 className="text-2xl font-light text-black mb-1">{user.organizationName}</h2>
+            <p className="text-gray-400 text-xs">
+              {user.email || "Resident"} · <span className="capitalize">{user.role}</span>
+            </p>
+          </div>
+
+          <div className="space-y-3">
             <button
               onClick={() => navigate("/chores")}
-              className="w-full py-3 bg-black text-white text-sm tracking-wide"
+              className="w-full py-4 bg-black text-white text-xs font-bold uppercase tracking-widest"
             >
-              See Chores
+              View Chores
             </button>
 
             {user.role === "manager" && (
               <button
                 onClick={() => navigate("/manage-residents")}
-                className="w-full py-3 border-2 border-black text-black text-sm tracking-wide hover:bg-gray-50"
+                className="w-full py-4 border border-black text-black text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition-colors"
               >
                 Manage Residents
               </button>
