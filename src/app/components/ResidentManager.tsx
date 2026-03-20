@@ -43,6 +43,7 @@ export function ResidentManager() {
       setResidents(residentData);
     });
 
+    //ubsubscribe from real-time updates when component unmounts or dependencies change (like user logging on)
     return () => unsubscribe();
   }, [user, loading]);
 
