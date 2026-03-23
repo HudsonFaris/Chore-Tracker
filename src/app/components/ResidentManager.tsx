@@ -5,6 +5,8 @@ import { collection, addDoc, query, where, onSnapshot, doc, deleteDoc } from "fi
 import { useAuth } from "../context/AuthContext";
 import { ChevronLeft, UserPlus, Users } from "lucide-react";
 
+
+//also declared sometypes here for simplicity, but in a larger app these would go in a separate file
 interface Resident {
   id: string;
   name: string;
