@@ -5,6 +5,8 @@ import { collection, addDoc, query, where, onSnapshot, doc, deleteDoc } from "fi
 import { useAuth } from "../context/AuthContext";
 import { ChevronLeft, UserPlus, Users } from "lucide-react";
 
+//accomdate for both resident and staff management in one component for simplicity, but in a larger app these would likely be split into separate components and routes
+//ResidentManager is responsible for allowing staff to add and remove residents. It listens in real-time to changes in the "users" collection filtered by the current org_id and role "resident". Residents are displayed in a list with their name and PIN, and staff can delete them with a confirmation prompt. A form at the top allows staff to add new residents by entering their name, email, and a 4-digit PIN.
 
 //also declared sometypes here for simplicity, but in a larger app these would go in a separate file
 interface Resident {
