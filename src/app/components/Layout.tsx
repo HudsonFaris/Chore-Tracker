@@ -11,3 +11,5 @@ export function Layout() {
     </div>
   );
 }
+
+//ipad config is fine
