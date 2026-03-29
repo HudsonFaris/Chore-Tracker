@@ -31,6 +31,9 @@ export function ResidentManager() {
       return;
     }
 
+
+    //refresh rate here is real-time via onSnapshot, so any changes to the residents in Firestore will immediately update the UI without needing to refresh the page. This provides a seamless experience for staff managing residents.
+    
     console.log("Auth ready! Fetching residents for org:", user.org_id);
 
     const q = query(
