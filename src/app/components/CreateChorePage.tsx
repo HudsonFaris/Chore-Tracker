@@ -35,6 +35,7 @@ export function CreateChorePage() {
     e.preventDefault();
     if (!task || selectedPeople.length === 0) return;
 
+    // Logic reverted to original per request
     await addDoc(collection(db, "chores"), {
       title: task,
       description,
@@ -54,15 +55,15 @@ export function CreateChorePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      {/* Header stays at the top */}
+    <div className="flex flex-col h-full max-h-screen bg-white overflow-hidden">
+      {/* Header - Stays at top */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
         <button onClick={() => navigate("/chores")} className="p-1"><ChevronLeft size={20}/></button>
         <span className="text-sm font-medium">Create New Task</span>
         <div className="w-8" />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {submitted ? (
           <div className="flex flex-col items-center py-20 text-center flex-1">
             <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-4">
@@ -72,7 +73,7 @@ export function CreateChorePage() {
           </div>
         ) : (
           <>
-            {/* This div now handles the scrolling for all the form fields */}
+            {/* Scrollable middle section */}
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
               <div className="space-y-4">
                 <input required placeholder="Task Title" className="w-full p-3 border-b outline-none focus:border-black" onChange={e => setTask(e.target.value)} />
@@ -133,7 +134,7 @@ export function CreateChorePage() {
               </button>
             </div>
 
-            {/* Confirm button stays fixed at the bottom */}
+            {/* Fixed Footer - Stays at bottom */}
             <div className="p-6 border-t bg-white shrink-0">
               <button type="submit" className="w-full py-4 bg-black text-white text-xs uppercase tracking-widest font-bold">
                 Confirm Assignment
