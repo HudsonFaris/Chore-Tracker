@@ -35,8 +35,12 @@ export function ChoreDetailPage() {
         imageUrl: url,
         status: "Pending Verification" 
       });
-    } catch (err) {
-      alert("Upload failed.");
+    } catch (err: any) {
+      //log error
+      console.error("Firebase Storage Error:", err);
+      console.error("Error Code:", err.code);
+      
+      alert(`Upload failed: ${err.message || "Unknown error"}`);
     } finally {
       setUploading(false);
     }
