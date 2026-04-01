@@ -5,8 +5,6 @@ import { db } from "../../firebase";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { ChevronLeft, Check, Camera } from "lucide-react";
 
-
-
 export function CreateChorePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -20,7 +18,6 @@ export function CreateChorePage() {
   const [uploadProof, setUploadProof] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [frequency, setFrequency] = useState<"once" | "weekly" | "bi-weekly">("once");
-
 
   useEffect(() => {
     const fetchResidents = async () => {
@@ -38,16 +35,12 @@ export function CreateChorePage() {
     e.preventDefault();
     if (!task || selectedPeople.length === 0) return;
 
-    const firstPersonName = selectedPeople[0];
-    const selectedResident = residents.find(r => r.name === firstPersonName);
-
     await addDoc(collection(db, "chores"), {
       title: task,
       description,
       assignedTo: selectedPeople,
       org_id: user.org_id,
       status: "In Progress",
-      residentEmail: selectedResident?.email || "",
       dueDate,
       dueTime,
       frequency,
@@ -61,16 +54,17 @@ export function CreateChorePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+    <div className="flex flex-col h-screen bg-white">
+      {/* Header stays at the top */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
         <button onClick={() => navigate("/chores")} className="p-1"><ChevronLeft size={20}/></button>
         <span className="text-sm font-medium">Create New Task</span>
         <div className="w-8" />
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
         {submitted ? (
-          <div className="flex flex-col items-center py-20 text-center">
+          <div className="flex flex-col items-center py-20 text-center flex-1">
             <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-4">
               <Check className="text-white" />
             </div>
@@ -78,64 +72,76 @@ export function CreateChorePage() {
           </div>
         ) : (
           <>
-            <div className="space-y-4">
-              <input required placeholder="Task Title" className="w-full p-3 border-b outline-none focus:border-black" onChange={e => setTask(e.target.value)} />
-              <textarea placeholder="Description / Steps" className="w-full p-3 border-b outline-none focus:border-black resize-none" rows={2} onChange={e => setDescription(e.target.value)} />
-            </div>
+            {/* This div now handles the scrolling for all the form fields */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-8">
+              <div className="space-y-4">
+                <input required placeholder="Task Title" className="w-full p-3 border-b outline-none focus:border-black" onChange={e => setTask(e.target.value)} />
+                <textarea placeholder="Description / Steps" className="w-full p-3 border-b outline-none focus:border-black resize-none" rows={2} onChange={e => setDescription(e.target.value)} />
+              </div>
+
               <div>
-              <label className="text-xs text-gray-400 block mb-3 uppercase tracking-widest">Repeat Frequency</label>
-              <div className="grid grid-cols-3 gap-2">
-                {["once", "weekly", "bi-weekly"].map((f) => (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => setFrequency(f as any)}
-                    className={`py-2 text-[10px] uppercase border ${
-                      frequency === f ? "bg-black text-white border-black" : "border-gray-200 text-gray-400"
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
+                <label className="text-xs text-gray-400 block mb-3 uppercase tracking-widest">Repeat Frequency</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {["once", "weekly", "bi-weekly"].map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setFrequency(f as any)}
+                      className={`py-2 text-[10px] uppercase border ${
+                        frequency === f ? "bg-black text-white border-black" : "border-gray-200 text-gray-400"
+                      }`}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="text-xs text-gray-400 block mb-3 uppercase tracking-widest">Assign To</label>
-              <div className="grid grid-cols-2 gap-2">
-                {residents.map(r => (
-                  <button
-                    type="button"
-                    key={r.id}
-                    onClick={() => setSelectedPeople(prev => prev.includes(r.name) ? prev.filter(p => p !== r.name) : [...prev, r.name])}
-                    className={`p-2 text-xs border ${selectedPeople.includes(r.name) ? "bg-black text-white border-black" : "border-gray-200 text-gray-500"}`}
-                  >
-                    {r.name}
-                  </button>
-                ))}
+              <div>
+                <label className="text-xs text-gray-400 block mb-3 uppercase tracking-widest">Assign To</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {residents.map(r => (
+                    <button
+                      type="button"
+                      key={r.id}
+                      onClick={() => setSelectedPeople(prev => prev.includes(r.name) ? prev.filter(p => p !== r.name) : [...prev, r.name])}
+                      className={`p-2 text-xs border ${selectedPeople.includes(r.name) ? "bg-black text-white border-black" : "border-gray-200 text-gray-500"}`}
+                    >
+                      {r.name}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                   <label className="text-[10px] text-gray-400 uppercase">Due Date</label>
+                   <input required type="date" className="w-full p-2 border text-xs" onChange={e => setDueDate(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                   <label className="text-[10px] text-gray-400 uppercase">Due Time</label>
+                   <input required type="time" className="w-full p-2 border text-xs" onChange={e => setDueTime(e.target.value)} />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setUploadProof(!uploadProof)}
+                className={`w-full py-3 border text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 ${uploadProof ? "bg-gray-100 border-black text-black" : "border-gray-200 text-gray-400"}`}
+              >
+                <Camera size={14} /> {uploadProof ? "Photo Proof Required" : "No Photo Required"}
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <input required type="date" className="p-2 border text-xs" onChange={e => setDueDate(e.target.value)} />
-              <input required type="time" className="p-2 border text-xs" onChange={e => setDueTime(e.target.value)} />
+            {/* Confirm button stays fixed at the bottom */}
+            <div className="p-6 border-t bg-white shrink-0">
+              <button type="submit" className="w-full py-4 bg-black text-white text-xs uppercase tracking-widest font-bold">
+                Confirm Assignment
+              </button>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setUploadProof(!uploadProof)}
-              className={`w-full py-3 border text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 ${uploadProof ? "bg-gray-100 border-black text-black" : "border-gray-200 text-gray-400"}`}
-            >
-              <Camera size={14} /> {uploadProof ? "Photo Proof Required" : "No Photo Required"}
-            </button>
-
-            <button type="submit" className="w-full py-4 bg-black text-white text-xs uppercase tracking-widest font-bold">
-              Confirm Assignment
-            </button>
           </>
         )}
       </form>
     </div>
-    
   );
 }
