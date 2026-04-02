@@ -13,6 +13,8 @@ export function ChoreDetailPage() {
   const [chore, setChore] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
 
+  //keep regular query with modified permissions on firebase auth and firebnase storage
+
   useEffect(() => {
     if (!id) return;
     const unsubscribe = onSnapshot(doc(db, "chores", id), (snap) => {
