@@ -13,6 +13,8 @@ export function ChoreDetailPage() {
   const [chore, setChore] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
 
+  //setUploading reg intervals
+
   //keep regular query with modified permissions on firebase auth and firebnase storage
 
   useEffect(() => {
