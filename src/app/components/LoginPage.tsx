@@ -87,6 +87,8 @@ export function LoginPage() {
     setLoading(true);
     setError("");
 
+    //set loading is just for UX, onAuthStateChanged listener in AuthContext will handle actual login state changes and redirection, so no need to manually set user here on success, just navigate to home and let the listener do its job.
+
     try {
       const userCred = await signInWithEmailAndPassword(auth, formData.email, formData.password);
       
